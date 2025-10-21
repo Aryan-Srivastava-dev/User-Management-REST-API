@@ -1,0 +1,200 @@
+<head>
+    <title>Fetch API</title>
+</head>
+
+<body>
+    <h2 style="text-align: center;">Welcome to User-Management REST API</h2>
+    <div>
+        <h3>Get Information of all users</h3>
+        <button id="getUser">Get</button>
+    </div>
+    <div>
+        <h3>Get Information of an individual user by their ID</h3>
+        <button id="getUserByID">Get individual user</button>
+        <input type="text" id="input_box_for_individual_users" placeholder="Enter id of user" style="display: none;"/>
+    </div>
+    <div id="postDiv">
+        <h3>Add a new user to the database</h3>
+        <button id="post">Post</button>
+        <input type="text" id="name" placeholder="Enter name" style="display: none;"/>
+        <input type="text" id="email" placeholder="Enter email" style="display: none;"/>
+        <input type="text" id="dob" placeholder="Enter date of birth" style="display: none;"/>
+    </div>
+    <div id="patchDiv">
+        <h3>Update Information about any user by their ID</h3>
+        <button id="patch">Patch</button>
+        <input type="text" id="toBeUpdateId" placeholder="Enter id of user" style="display: none;"/>
+        <input type="text" id="updateName" placeholder="Enter name" style="display: none;"/>
+        <input type="text" id="updateEmail" placeholder="Enter email" style="display: none;"/>
+        <input type="text" id="updateDob" placeholder="Enter date of birth" style="display: none;"/>
+    </div>
+    <div>
+        <h3>Delete a user from the database by their ID</h3>
+        <button id="delete">Delete</button>
+        <input type="text" id="id" placeholder="Enter id of user" style="display: none;"/>
+    </div>
+
+    <script>
+        const BASE_URL = "http://localhost:8000/api/users";
+
+        // Getting all users
+        {
+            document.getElementById("getUser").addEventListener("click", async () => {
+                try {
+                    const res = await fetch(`${BASE_URL}/get`);
+                    const data = await res.json();
+                    console.log("All users: ", data);
+                }
+                catch(err) {
+                    console.log("Error in getting all users...", err);
+                }
+            });
+        }
+
+        // Getting individual users by id
+        {
+            const input = document.getElementById("input_box_for_individual_users");
+
+            document.getElementById("getUserByID").addEventListener("click", () => {
+                if(input.style.display === "none") {
+                    input.style.display = "block";
+                    input.focus();
+                }
+                else {
+                    input.style.display = "none";
+                }
+            });
+
+            input.addEventListener("keydown", async (event) => {
+                    if(event.key === "Enter") {
+                        if(input.value !== "") {
+                            const res = await fetch(`${BASE_URL}/get/${input.value}`);
+                            const data = await res.json();
+                            console.log(data);
+                        }
+                        else {
+                            console.log("Please enter an ID");
+                        }
+                    }
+                });
+        }
+        
+        // Adding users
+        {
+            const inputName = document.getElementById("name");
+            const inputEmail = document.getElementById("email");
+            const inputDob = document.getElementById("dob");
+            
+            document.getElementById("post").addEventListener("click", () => {
+                const inputNameStyle = inputName.style.display;
+                const inputEmailStyle = inputEmail.style.display;
+                const inputDobStyle = inputDob.style.display;
+
+                if(inputNameStyle === "none" && inputEmailStyle === "none" && inputDobStyle === "none") {
+                    inputName.style.display = "block";
+                    inputEmail.style.display = "block";
+                    inputDob.style.display = "block";
+                    inputName.focus();
+                }
+                else {
+                    inputName.style.display = "none";
+                    inputEmail.style.display = "none";
+                    inputDob.style.display = "none";
+                }
+            });
+
+            document.getElementById("postDiv").addEventListener("keyup", async (event) => {
+                if(event.key === "Enter") {
+                    if(inputName.value !== "" && inputDob.value !== "") {
+                        const res = await fetch(`${BASE_URL}/post`, {
+                            method: "POST",
+                            headers: {"Content-Type": "application/json"},
+                            body: JSON.stringify({name: inputName.value, email: inputEmail.value === ""?null:inputEmail.value, dob: inputDob.value})
+                        });
+                        const message = await res.text();
+                        console.log(message);
+                    }
+                    else {
+                        console.log("Name and date of birth cannont be empty");
+                    }
+                }
+            });
+        }
+
+        // Updating users
+        {
+            const id = document.getElementById("toBeUpdateId");
+            const name = document.getElementById("updateName");
+            const email = document.getElementById("updateEmail");
+            const dob = document.getElementById("updateDob");
+
+            document.getElementById("patch").addEventListener("click", () => {
+                if(id.style.display === "none" && name.style.display === "none" && email.style.display === "none" && dob.style.display === "none") {
+                    id.style.display = "block";
+                    name.style.display = "block";
+                    email.style.display = "block";
+                    dob.style.display = "block";
+                    id.focus();
+                }
+                else {
+                    id.style.display = "none";
+                    name.style.display = "none";
+                    email.style.display = "none";
+                    dob.style.display = "none";
+                }
+            });
+
+            document.getElementById("patchDiv").addEventListener("keyup", async (event) => {
+                if(event.key === "Enter") {
+                    if(id.value !== "") {
+                        const res = await fetch(`${BASE_URL}/${id.value}`, {
+                            method: "PATCH",
+                            headers: {"Content-Type": "application/json"},
+                            body: JSON.stringify({id: id.value,
+                                name: name.value === ""?undefined:name.value,
+                                email: email.value === ""?null:email.value,
+                                dob: dob.value === ""?undefined:dob.value})
+                        });
+                        const message = await res.text();
+                        console.log(message);
+                    }
+                    else {
+                        console.log("ID cannot be empty");
+                    }
+                }
+            });            
+        }
+
+        // Deleting users
+        {
+            const id = document.getElementById("id");
+
+            document.getElementById("delete").addEventListener("click", () => {
+                if(id.style.display === "none") {
+                    id.style.display = "block";
+                    id.focus();
+                }
+                else {
+                    id.style.display = "none";
+                }
+            });
+
+            id.addEventListener("keyup", async (event) => {
+                if(event.key === "Enter") {
+                    if(id.value !== "") {
+                        const res = await fetch(`${BASE_URL}/${id.value}`, {
+                            method: "DELETE",
+                            headers: {"Content-Type": "application/json"},
+                            body: JSON.stringify({id: id.value})
+                        });
+                        const message = await res.text();
+                        console.log(message);
+                    }
+                    else {
+                        console.log("Enter an ID");
+                    }
+                }
+            });
+        }
+    </script>
+</body>
