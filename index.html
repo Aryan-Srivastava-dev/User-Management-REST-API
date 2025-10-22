@@ -46,7 +46,7 @@
                     console.log("All users: ", data);
                 }
                 catch(err) {
-                    console.log("Error in getting all users...", err);
+                    console.log("Error in getting all users");
                 }
             });
         }
@@ -66,6 +66,7 @@
             });
 
             input.addEventListener("keydown", async (event) => {
+                try{
                     if(event.key === "Enter") {
                         if(input.value !== "") {
                             const res = await fetch(`${BASE_URL}/get/${input.value}`);
@@ -73,10 +74,14 @@
                             console.log(data);
                         }
                         else {
-                            console.log("Please enter an ID");
+                            console.log("Enter an ID");
                         }
                     }
-                });
+                }
+                catch(err) {
+                    console.log("Error in fetching individual user details");
+                }
+            });
         }
         
         // Adding users
@@ -104,19 +109,24 @@
             });
 
             document.getElementById("postDiv").addEventListener("keyup", async (event) => {
-                if(event.key === "Enter") {
-                    if(inputName.value !== "" && inputDob.value !== "") {
-                        const res = await fetch(`${BASE_URL}/post`, {
-                            method: "POST",
-                            headers: {"Content-Type": "application/json"},
-                            body: JSON.stringify({name: inputName.value, email: inputEmail.value === ""?null:inputEmail.value, dob: inputDob.value})
-                        });
-                        const message = await res.text();
-                        console.log(message);
+                try {
+                    if(event.key === "Enter") {
+                        if(inputName.value !== "" && inputDob.value !== "") {
+                            const res = await fetch(`${BASE_URL}/post`, {
+                                method: "POST",
+                                headers: {"Content-Type": "application/json"},
+                                body: JSON.stringify({name: inputName.value, email: inputEmail.value === ""?null:inputEmail.value, dob: inputDob.value})
+                            });
+                            const message = await res.text();
+                            console.log(message);
+                        }
+                        else {
+                            console.log("Name and date of birth cannont be empty");
+                        }
                     }
-                    else {
-                        console.log("Name and date of birth cannont be empty");
-                    }
+                }
+                catch(err) {
+                    console.log("Error in adding user");
                 }
             });
         }
@@ -145,22 +155,27 @@
             });
 
             document.getElementById("patchDiv").addEventListener("keyup", async (event) => {
-                if(event.key === "Enter") {
-                    if(id.value !== "") {
-                        const res = await fetch(`${BASE_URL}/${id.value}`, {
-                            method: "PATCH",
-                            headers: {"Content-Type": "application/json"},
-                            body: JSON.stringify({id: id.value,
-                                name: name.value === ""?undefined:name.value,
-                                email: email.value === ""?null:email.value,
-                                dob: dob.value === ""?undefined:dob.value})
-                        });
-                        const message = await res.text();
-                        console.log(message);
+                try {
+                    if(event.key === "Enter") {
+                        if(id.value !== "") {
+                            const res = await fetch(`${BASE_URL}/${id.value}`, {
+                                method: "PATCH",
+                                headers: {"Content-Type": "application/json"},
+                                body: JSON.stringify({id: id.value,
+                                    name: name.value === ""?undefined:name.value,
+                                    email: email.value === ""?null:email.value,
+                                    dob: dob.value === ""?undefined:dob.value})
+                            });
+                            const message = await res.text();
+                            console.log(message);
+                        }
+                        else {
+                            console.log("ID cannot be empty");
+                        }
                     }
-                    else {
-                        console.log("ID cannot be empty");
-                    }
+                }
+                catch(err) {
+                    console.log("Error in updating");
                 }
             });            
         }
@@ -180,19 +195,24 @@
             });
 
             id.addEventListener("keyup", async (event) => {
-                if(event.key === "Enter") {
-                    if(id.value !== "") {
-                        const res = await fetch(`${BASE_URL}/${id.value}`, {
-                            method: "DELETE",
-                            headers: {"Content-Type": "application/json"},
-                            body: JSON.stringify({id: id.value})
-                        });
-                        const message = await res.text();
-                        console.log(message);
+                try {
+                    if(event.key === "Enter") {
+                        if(id.value !== "") {
+                            const res = await fetch(`${BASE_URL}/${id.value}`, {
+                                method: "DELETE",
+                                headers: {"Content-Type": "application/json"},
+                                body: JSON.stringify({id: id.value})
+                            });
+                            const message = await res.text();
+                            console.log(message);
+                        }
+                        else {
+                            console.log("Enter an ID");
+                        }
                     }
-                    else {
-                        console.log("Enter an ID");
-                    }
+                }
+                catch(err) {
+                    console.log("Error in deleting user");
                 }
             });
         }
