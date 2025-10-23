@@ -3,7 +3,7 @@ A fully functional CRUD application with dynamic frontend-backend interaction, a
 
 # Full-Stack User Management CRUD App
 
-A **full-stack CRUD application** built entirely from scratch using **Node.js, Express.js, PostgreSQL, HTML, CSS, and Vanilla JavaScript (Fetch API)**.  
+A **full-stack CRUD application** built entirely from scratch using **Node.js, Express.js, PostgreSQL, HTML, CSS, and JavaScript (Fetch API)**.  
 It demonstrates strong understanding of backend architecture, REST API design, frontend-backend communication, and dynamic UI interactivity.
 
 ---
@@ -25,7 +25,7 @@ It demonstrates strong understanding of backend architecture, REST API design, f
 ---
 
 ### 💻 Frontend
-- **Built using HTML, CSS, and Vanilla JS (no frameworks)**
+- **Built using HTML, CSS, and JS (no frameworks)**
 - Connected to backend via **Fetch API**
 - Interactive interface to perform all CRUD operations:
   - Fetch all users or specific users by ID
