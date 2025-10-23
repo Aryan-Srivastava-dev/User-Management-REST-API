@@ -30,14 +30,18 @@ app.get("/api/users/get", async (req, res) => {
 
 app.get("/api/users/get/:id", async (req, res) => {
     const id = req.params.id;
-        try {
-            const result = await pool.query(`SELECT * FROM userbase WHERE id = $1`, [id]);
+    const isIdThere = await pool.query(`SELECT 1 FROM userbase WHERE id = ${id} LIMIT 1;`);
+    if(isIdThere.rowCount === 0) {
+        return res.json(`User with ID ${id} not found`);
+    }
+    try {
+        const result = await pool.query(`SELECT * FROM userbase WHERE id = $1`, [id]);
             return res.json(result.rows);
-        }
-        catch(err) {
-            console.error(`Could not find user with ID ${id}`);
+    }
+    catch(err) {
+        console.error(`Could not find user with ID ${id}`);
             return res.status(500).send("Server error");
-        }
+    }
 });
 
 app.route("/api/users/:id")
@@ -47,6 +51,10 @@ app.route("/api/users/:id")
         const email = req.body.email;
         const dob = req.body.dob;
 
+        const isIdThere = await pool.query(`SELECT 1 FROM userbase WHERE id = ${id} LIMIT 1;`);
+        if(isIdThere.rowCount === 0) {
+            return res.send(`User with ID ${id} not found`);
+        }
         if(name != undefined) {
             try {
                 await pool.query(`UPDATE userbase SET name = $1 WHERE id = $2;`, [name, id]);
@@ -82,6 +90,10 @@ app.route("/api/users/:id")
     })
     .delete(async (req, res) => {
         const id = req.params.id;
+        const isIdThere = await pool.query(`SELECT 1 FROM userbase WHERE id = ${id} LIMIT 1;`);
+        if(isIdThere.rowCount === 0) {
+            return res.send(`User with ID ${id} not found`);
+        }
         try {
             await pool.query(`DELETE FROM userbase WHERE id = $1`, [id]);
             return res.send("User deleted successfully");
