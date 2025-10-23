@@ -30,7 +30,7 @@ app.get("/api/users/get", async (req, res) => {
 
 app.get("/api/users/get/:id", async (req, res) => {
     const id = req.params.id;
-    const isIdThere = await pool.query(`SELECT 1 FROM userbase WHERE id = ${id} LIMIT 1;`);
+    const isIdThere = await pool.query(`SELECT 1 FROM userbase WHERE id = $1 LIMIT 1;`, [id]);
     if(isIdThere.rowCount === 0) {
         return res.json(`User with ID ${id} not found`);
     }
@@ -51,7 +51,7 @@ app.route("/api/users/:id")
         const email = req.body.email;
         const dob = req.body.dob;
 
-        const isIdThere = await pool.query(`SELECT 1 FROM userbase WHERE id = ${id} LIMIT 1;`);
+        const isIdThere = await pool.query(`SELECT 1 FROM userbase WHERE id = $1 LIMIT 1;`, [id]);
         if(isIdThere.rowCount === 0) {
             return res.send(`User with ID ${id} not found`);
         }
@@ -90,7 +90,7 @@ app.route("/api/users/:id")
     })
     .delete(async (req, res) => {
         const id = req.params.id;
-        const isIdThere = await pool.query(`SELECT 1 FROM userbase WHERE id = ${id} LIMIT 1;`);
+        const isIdThere = await pool.query(`SELECT 1 FROM userbase WHERE id = $1 LIMIT 1;`, [id]);
         if(isIdThere.rowCount === 0) {
             return res.send(`User with ID ${id} not found`);
         }
